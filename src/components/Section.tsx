@@ -1,10 +1,16 @@
 import TaskCard from "./TaskCard";
 
-export default function Section({ title }: { title: string }) {
+export default function Section({
+  title,
+  onShowDetail,
+}: {
+  title: string;
+  onShowDetail?: () => void;
+}) {
   return (
     <section className=" mt-4">
       <div className="bg-dark font-medium px-2 h-14 flex items-center justify-between rounded-[12px]">
-        <p className="font-urbanist text-xl ">
+        <p className="font-urbanist text-xl">
           {title} <span className="text-white/20">(3)</span>
         </p>
 
@@ -14,7 +20,9 @@ export default function Section({ title }: { title: string }) {
       </div>
 
       <div className="h-fit mt-3 bg-third p-2 rounded-[12px]">
-        <TaskCard />
+        <div onClick={onShowDetail}>
+          <TaskCard />
+        </div>
       </div>
     </section>
   );

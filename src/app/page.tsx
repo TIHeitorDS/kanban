@@ -1,7 +1,17 @@
+"use client";
+
 import Section from "@/components/Section";
+import DetailTask from "@/components/DetailTask";
 import Link from "next/link";
+import { useState } from "react";
 
 export default function Home() {
+  const [showDetail, setShowDetail] = useState(false);
+
+  const onShowDetail = () => {
+    setShowDetail(!showDetail);
+  };
+
   return (
     <div className="w-full px-4 h-svh bg-secondary divide-y-2 divide-white">
       <header className="flex py-[10px]">
@@ -17,22 +27,31 @@ export default function Home() {
         </p>
       </header>
 
-      <main>
-        <div className="mt-8">
-          <input
-            type="text"
-            name="search"
-            id="search"
-            placeholder="Pesquisar"
-            className="bg-primary p-[10px] w-full ring-0 rounded-[8px] outline-0 outline-transparent focus:outline-green focus:outline-1 transition-all duration-300 bg-[url('/search.svg')] bg-no-repeat pl-[54px] bg-[position:10px_center]"
-          />
+      <main className="relative overflow-hidden -mx-4">
+        <div className="mx-4">
+          <div className="mt-8">
+            <input
+              type="text"
+              name="search"
+              id="search"
+              placeholder="Pesquisar"
+              className="bg-primary p-[10px] w-full ring-0 rounded-[8px] outline-0 outline-transparent focus:outline-green focus:outline-1 transition-all duration-300 bg-[url('/search.svg')] bg-no-repeat pl-[54px] bg-[position:10px_center]"
+            />
+          </div>
+
+          <Section title="To-do" onShowDetail={onShowDetail} />
+
+          <Section title="Doing" />
+
+          <Section title="Done" />
         </div>
 
-        <Section title="To-do" />
+        {showDetail && <div className="fixed inset-0 bg-primary/50 z-10"></div>}
 
-        <Section title="Doing" />
-
-        <Section title="Done" />
+        <DetailTask
+          isShowing={showDetail}
+          onClose={() => setShowDetail(false)}
+        />
       </main>
     </div>
   );

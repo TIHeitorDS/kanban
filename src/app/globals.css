@@ -5,6 +5,8 @@
 }
 
 @theme {
+  --color-dark: #2c2c2c;
+  --color-purple: #6b4fa3;
   --color-primary: #3a3a3a;
   --color-secondary: #222222;
   --color-third: #1a1a1a;
@@ -12,4 +14,5 @@
   --color-green: #b4ebc4;
   --color-gray: #6b7683;
   --color-red: #ef5350;
+  --font-urbanist: "Urbanist", sans-serif;
 }

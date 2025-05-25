@@ -1,10 +1,22 @@
 "use client";
 
-import Link from "next/link";
+import Link from "next/link"
 
-export default function LoginForm() {
+export default function SignUpForm() {
   return (
     <form className="space-y-6">
+      <div className="gap-1">
+        <label htmlFor="username">Nome</label>
+        <input
+          type="text"
+          id="name"
+          name="name"
+          placeholder="Digite seu e-mail"
+          className="bg-primary p-[10px] w-full ring-0 rounded-[8px] outline-0 outline-transparent focus:outline-green focus:outline-1 transition-all duration-300"
+          required
+        />
+      </div>
+
       <div className="gap-1">
         <label htmlFor="username">E-mail</label>
         <input
@@ -33,12 +45,12 @@ export default function LoginForm() {
         type="submit"
         className="bg-green text-primary w-full py-[10px] rounded-full"
       >
-        Entrar
+        Criar contar
       </button>
 
       <p className="text-gray w-full text-sm text-center mt-28">
-        Não possui uma conta?{" "}
-        <Link href={"/auth/signup"} className="text-green underline"> Cadastre-se agora</Link>
+        Já possui uma conta?{" "}
+        <Link href="/auth/login" className="text-green underline"> Faça login agora</Link>
       </p>
     </form>
   );

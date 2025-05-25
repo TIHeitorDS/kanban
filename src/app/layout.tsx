@@ -7,7 +7,7 @@ const poppins = Poppins({
   variable: "--font-poppins",
 });
 
-export const urbanist = Urbanist({
+const urbanist = Urbanist({
   subsets: ["latin"],
   weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
   variable: "--font-urbanist",
@@ -19,7 +19,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${poppins.variable}`}>
+    <html lang="en" className={`${poppins.variable} ${urbanist.variable}`}>
       <body
         className={`${poppins.variable} pt-14 text-white antialiased bg-secondary`}
       >

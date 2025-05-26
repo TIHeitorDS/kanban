@@ -3,15 +3,18 @@ import TaskMenu from "./TaskMenu";
 
 export default function DetailTask({
   isShowing = false,
+  onEdit,
   onClose,
 }: {
   isShowing?: boolean;
+  onEdit?: () => void;
   onClose?: () => void;
 }) {
   return (
     <TaskMenu
       isShowing={isShowing}
       onClose={onClose}
+      onEdit={onEdit}
       title="Detalhes da tarefa"
     >
       <div>

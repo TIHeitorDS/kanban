@@ -5,10 +5,12 @@ import DetailTask from "@/components/DetailTask";
 import Link from "next/link";
 import { useState } from "react";
 import CreateTask from "@/components/CreateTask";
+import EditTask from "@/components/EditTask";
 
 export default function Home() {
   const [showDetail, setShowDetail] = useState(false);
   const [showCreate, setShowCreate] = useState(false);
+  const [showEdit, setShowEdit] = useState(false);
 
   const onShowDetail = () => {
     setShowDetail(!showDetail);
@@ -16,6 +18,11 @@ export default function Home() {
 
   const onShowCreate = () => {
     setShowCreate(!showCreate);
+  };
+
+  const onShowEdit = () => {
+    setShowEdit(!showEdit);
+    setShowDetail(false);
   };
 
   return (
@@ -71,6 +78,7 @@ export default function Home() {
 
         <DetailTask
           isShowing={showDetail}
+          onEdit={onShowEdit}
           onClose={() => setShowDetail(false)}
         />
 
@@ -78,6 +86,8 @@ export default function Home() {
           isShowing={showCreate}
           onClose={() => setShowCreate(false)}
         />
+
+        <EditTask isShowing={showEdit} onClose={() => setShowEdit(false)} />
       </main>
     </div>
   );

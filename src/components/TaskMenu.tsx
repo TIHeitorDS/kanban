@@ -1,10 +1,12 @@
 export default function TaskMenu({
   isShowing = false,
   onClose,
+  onEdit,
   title,
   children,
 }: {
   isShowing?: boolean;
+  onEdit?: () => void;
   onClose?: () => void;
   title?: string;
   children?: React.ReactNode;
@@ -19,7 +21,9 @@ export default function TaskMenu({
         <p className="font-bold text-3xl">{title}</p>
 
         <div className="flex items-center gap-4">
-          <img src="/edit.svg" alt="" className="w-7" />
+          <button type="button" onClick={onEdit}>
+            <img src="/edit.svg" alt="" className="w-7" />
+          </button>
 
           <button onClick={onClose}>
             <img src="/close.svg" alt="" className="w-7" />

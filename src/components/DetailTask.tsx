@@ -1,4 +1,5 @@
 import Category from "./Category";
+import TaskMenu from "./TaskMenu";
 
 export default function DetailTask({
   isShowing = false,
@@ -8,23 +9,11 @@ export default function DetailTask({
   onClose?: () => void;
 }) {
   return (
-    <div
-      className={`rounded-[12px] inset-x-0 z-20 border-t-2 p-4 absolute bg-secondary divide-y-2 space-y-8 inset-y-0 ${
-        isShowing ? "translate-y-0" : "translate-y-full"
-      } transition-transform duration-300`}
+    <TaskMenu
+      isShowing={isShowing}
+      onClose={onClose}
+      title="Detalhes da tarefa"
     >
-      <div className="flex items-center justify-between pb-[10px]">
-        <p className="font-bold text-3xl">Título Tarefa</p>
-
-        <div className="flex items-center gap-4">
-          <img src="/edit.svg" alt="" className="w-7" />
-
-          <button onClick={onClose}>
-            <img src="/close.svg" alt="" className="w-7" />
-          </button>
-        </div>
-      </div>
-
       <div>
         <div className="flex items-center gap-[10px] mb-4">
           <Category />
@@ -43,6 +32,6 @@ export default function DetailTask({
           fugit sint!
         </p>
       </div>
-    </div>
+    </TaskMenu>
   );
 }

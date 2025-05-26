@@ -4,12 +4,18 @@ import Section from "@/components/Section";
 import DetailTask from "@/components/DetailTask";
 import Link from "next/link";
 import { useState } from "react";
+import CreateTask from "@/components/CreateTask";
 
 export default function Home() {
   const [showDetail, setShowDetail] = useState(false);
+  const [showCreate, setShowCreate] = useState(false);
 
   const onShowDetail = () => {
     setShowDetail(!showDetail);
+  };
+
+  const onShowCreate = () => {
+    setShowCreate(!showCreate);
   };
 
   return (
@@ -39,18 +45,38 @@ export default function Home() {
             />
           </div>
 
-          <Section title="To-do" onShowDetail={onShowDetail} />
+          <Section
+            title="To-do"
+            onShowDetail={onShowDetail}
+            onShowCreate={onShowCreate}
+          />
 
-          <Section title="Doing" />
+          <Section
+            title="Doing"
+            onShowDetail={onShowDetail}
+            onShowCreate={onShowCreate}
+          />
 
-          <Section title="Done" />
+          <Section
+            title="Done"
+            onShowDetail={onShowDetail}
+            onShowCreate={onShowCreate}
+          />
         </div>
 
-        {showDetail && <div className="fixed inset-0 bg-primary/50 z-10"></div>}
+        {showDetail ||
+          (showCreate && (
+            <div className="fixed inset-0 bg-primary/50 z-10"></div>
+          ))}
 
         <DetailTask
           isShowing={showDetail}
           onClose={() => setShowDetail(false)}
+        />
+
+        <CreateTask
+          isShowing={showCreate}
+          onClose={() => setShowCreate(false)}
         />
       </main>
     </div>

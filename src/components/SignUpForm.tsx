@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import Input from "./Input";
+import SubmitButton from "./SubmitButton";
 
 export default function SignUpForm() {
   return (
@@ -28,12 +29,7 @@ export default function SignUpForm() {
         placeholder="Digite sua senha"
         required={true}
       />
-      <button
-        type="submit"
-        className="bg-green text-primary w-full py-[10px] rounded-full"
-      >
-        Criar contar
-      </button>
+      <SubmitButton title={"Criar conta"} />
       <p className="text-gray w-full text-sm text-center mt-28">
         Já possui uma conta?{" "}
         <Link href="/auth/login" className="text-green underline">

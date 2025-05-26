@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import Input from "./Input";
+import SubmitButton from "./SubmitButton";
 
 export default function LoginForm() {
   return (
@@ -22,12 +23,7 @@ export default function LoginForm() {
         required={true}
       />
 
-      <button
-        type="submit"
-        className="bg-green text-primary w-full py-[10px] rounded-full"
-      >
-        Entrar
-      </button>
+      <SubmitButton title="Entrar" />
 
       <p className="text-gray w-full text-sm text-center mt-28">
         Não possui uma conta?{" "}

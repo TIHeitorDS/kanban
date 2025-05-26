@@ -1,10 +1,22 @@
 import Input from "./Input";
 import SubmitButton from "./SubmitButton";
 import TaskMenu from "./TaskMenu";
+import { useRef } from "react";
 
 export default function CreateTask({ isShowing = true, onClose = () => {} }) {
+  const taskMenuRef = useRef<HTMLButtonElement | null>(null);
+
+  if (taskMenuRef.current) {
+    taskMenuRef.current.style.display = "none"; // Hide the button
+  }
+
   return (
-    <TaskMenu title="Criar tarefa" isShowing={isShowing} onClose={onClose}>
+    <TaskMenu
+      title="Criar tarefa"
+      isShowing={isShowing}
+      onClose={onClose}
+      editButtonRef={taskMenuRef}
+    >
       <form action="" className="space-y-4">
         <Input
           label=""

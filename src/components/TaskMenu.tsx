@@ -4,12 +4,14 @@ export default function TaskMenu({
   onEdit,
   title,
   children,
+  editButtonRef,
 }: {
   isShowing?: boolean;
   onEdit?: () => void;
   onClose?: () => void;
   title?: string;
   children?: React.ReactNode;
+  editButtonRef?: React.RefObject<HTMLButtonElement | null>;
 }) {
   return (
     <div
@@ -21,7 +23,7 @@ export default function TaskMenu({
         <p className="font-bold text-3xl">{title}</p>
 
         <div className="flex items-center gap-4">
-          <button type="button" onClick={onEdit}>
+          <button ref={editButtonRef} type="button" onClick={onEdit}>
             <img src="/edit.svg" alt="" className="w-7" />
           </button>
 

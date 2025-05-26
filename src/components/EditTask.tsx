@@ -1,10 +1,22 @@
+import { useRef } from "react";
 import Input from "./Input";
 import SubmitButton from "./SubmitButton";
 import TaskMenu from "./TaskMenu";
 
 export default function EditTask({ isShowing = true, onClose = () => {} }) {
+  const taskMenuRef = useRef<HTMLButtonElement | null>(null);
+
+  if (taskMenuRef.current) {
+    taskMenuRef.current.style.display = "none"; // Hide the button
+  }
+
   return (
-    <TaskMenu title="Editar tarefa" isShowing={isShowing} onClose={onClose}>
+    <TaskMenu
+      title="Editar tarefa"
+      isShowing={isShowing}
+      onClose={onClose}
+      editButtonRef={taskMenuRef}
+    >
       <form action="" className="space-y-4">
         <Input
           label=""
@@ -50,7 +62,7 @@ export default function EditTask({ isShowing = true, onClose = () => {} }) {
           ))}
         </div>
 
-        <SubmitButton title="Criar tarefa" />
+        <SubmitButton title="Salvar alterações" />
       </form>
     </TaskMenu>
   );

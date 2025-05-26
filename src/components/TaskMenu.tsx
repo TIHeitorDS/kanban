@@ -1,5 +1,3 @@
-import Category from "./Category";
-
 export default function TaskMenu({
   isShowing = false,
   onClose,

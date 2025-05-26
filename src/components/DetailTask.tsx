@@ -1,3 +1,5 @@
+import Category from "./Category";
+
 export default function DetailTask({
   isShowing = false,
   onClose,
@@ -7,7 +9,7 @@ export default function DetailTask({
 }) {
   return (
     <div
-      className={`rounded-[12px] inset-x-0 z-20 border-t-2 p-4 absolute bg-secondary divide-y-2 space-y-8 bottom-0 ${
+      className={`rounded-[12px] inset-x-0 z-20 border-t-2 p-4 absolute bg-secondary divide-y-2 space-y-8 inset-y-0 ${
         isShowing ? "translate-y-0" : "translate-y-full"
       } transition-transform duration-300`}
     >
@@ -23,12 +25,24 @@ export default function DetailTask({
         </div>
       </div>
 
-      <p>
-        Lorem ipsum dolor sit amet consectetur adipisicing elit. Excepturi
-        reiciendis eos autem, nisi incidunt quae repellat nostrum accusamus
-        atque deleniti. Tempora nam dolor illum velit libero culpa cumque fugit
-        sint!
-      </p>
+      <div>
+        <div className="flex items-center gap-[10px] mb-4">
+          <Category />
+
+          <div className="flex items-center gap-2">
+            <span className="h-4 w-4 bg-green rounded-full"></span>
+
+            <p>To-do</p>
+          </div>
+        </div>
+
+        <p>
+          Lorem ipsum dolor sit amet consectetur adipisicing elit. Excepturi
+          reiciendis eos autem, nisi incidunt quae repellat nostrum accusamus
+          atque deleniti. Tempora nam dolor illum velit libero culpa cumque
+          fugit sint!
+        </p>
+      </div>
     </div>
   );
 }

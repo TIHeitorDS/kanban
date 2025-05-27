@@ -42,7 +42,7 @@ export default function CreateTask({ isShowing = true, onClose = () => {} }) {
           required={true}
         />
 
-        <div className="flex justify-between font-medium mt-8 mb-12">
+        <div className="flex justify-center gap-4 font-medium mt-8 mb-12">
           {["To-do", "Doing", "Done"].map((status) => (
             <label
               key={status}
@@ -52,7 +52,7 @@ export default function CreateTask({ isShowing = true, onClose = () => {} }) {
                 type="radio"
                 name="status"
                 value={status}
-                className="peer appearance-none w-4 h-4 rounded-full bg-white checked:bg-green checked:border-green mr-3"
+                className="peer appearance-none w-4 h-4 rounded-full bg-white checked:bg-green checked:border-green mr-1"
                 required
               />
               <span className="peer-checked:text-white peer-checked:font-bold rounded transition-all">

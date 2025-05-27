@@ -8,7 +8,7 @@ Siga os passos abaixo para rodar o projeto localmente:
 
 1. **Clone o repositório**
     ```bash
-    git clone https://github.com/seu-usuario/kanban.git
+    git clone https://github.com/TIHeitorDS/kanban.git
     cd kanban
     ```
 

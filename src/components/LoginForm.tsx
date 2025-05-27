@@ -6,7 +6,7 @@ import SubmitButton from "./SubmitButton";
 
 export default function LoginForm() {
   return (
-    <form className="space-y-6">
+    <form className="space-y-6 lg:w-1/2 lg:mx-auto">
       <Input
         type="email"
         label="E-mail"

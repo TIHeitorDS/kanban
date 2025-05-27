@@ -34,8 +34,8 @@ export default function Section({
         </button>
       </div>
 
-      <div className="h-fit mt-3 bg-third p-2 rounded-[12px]">
-        <div ref={setNodeRef} className="space-y-4">
+      <div className="h-full mt-3 bg-third p-2 rounded-[12px]">
+        <div ref={setNodeRef} className="h-full space-y-4">
           {children}
         </div>
       </div>

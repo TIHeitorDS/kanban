@@ -64,10 +64,6 @@ export default function Home() {
   const [showCreate, setShowCreate] = useState(false);
   const [showEdit, setShowEdit] = useState(false);
 
-  const onShowDetail = () => {
-    setShowDetail(!showDetail);
-  };
-
   const onShowCreate = () => {
     setShowCreate(!showCreate);
   };

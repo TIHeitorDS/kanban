@@ -6,8 +6,60 @@ import Link from "next/link";
 import { useState } from "react";
 import CreateTask from "@/components/CreateTask";
 import EditTask from "@/components/EditTask";
+import TaskCard from "@/components/TaskCard";
+import { Task } from "@/utils/definitions";
+import { DndContext, DragEndEvent } from "@dnd-kit/core";
+
+const columns = [
+  {
+    id: "todos",
+    title: "To-do",
+  },
+  {
+    id: "doing",
+    title: "Doing",
+  },
+  {
+    id: "done",
+    title: "Done",
+  },
+];
+
+const initialTasks: Task[] = [
+  {
+    id: "1",
+    status: "todos",
+    title: "Tarefa 1",
+    createdAt: "2025-03-06T00:00:00Z",
+  },
+  {
+    id: "2",
+    status: "doing",
+    title: "Tarefa 2",
+    createdAt: "2025-03-07T00:00:00Z",
+  },
+  {
+    id: "3",
+    status: "done",
+    title: "Tarefa 3",
+    createdAt: "2025-03-08T00:00:00Z",
+  },
+  {
+    id: "4",
+    status: "todos",
+    title: "Tarefa 4",
+    createdAt: "2025-03-09T00:00:00Z",
+  },
+  {
+    id: "5",
+    status: "doing",
+    title: "Tarefa 5",
+    createdAt: "2025-03-10T00:00:00Z",
+  },
+];
 
 export default function Home() {
+  const [tasks, setTasks] = useState(initialTasks);
   const [showDetail, setShowDetail] = useState(false);
   const [showCreate, setShowCreate] = useState(false);
   const [showEdit, setShowEdit] = useState(false);
@@ -22,7 +74,26 @@ export default function Home() {
 
   const onShowEdit = () => {
     setShowEdit(!showEdit);
-    setShowDetail(false);
+  };
+
+  const handleDragEnd = (event: DragEndEvent) => {
+    const { active, over } = event;
+
+    if (!over) return;
+
+    const taskId = active.id as string;
+    const newStatus = over.id as Task["status"];
+
+    setTasks((prevTasks) =>
+      prevTasks.map((task) =>
+        task.id === taskId
+          ? {
+              ...task,
+              status: newStatus,
+            }
+          : task
+      )
+    );
   };
 
   return (
@@ -52,23 +123,29 @@ export default function Home() {
             />
           </div>
 
-          <Section
-            title="To-do"
-            onShowDetail={onShowDetail}
-            onShowCreate={onShowCreate}
-          />
-
-          <Section
-            title="Doing"
-            onShowDetail={onShowDetail}
-            onShowCreate={onShowCreate}
-          />
-
-          <Section
-            title="Done"
-            onShowDetail={onShowDetail}
-            onShowCreate={onShowCreate}
-          />
+          <div className="flex flex-col lg:flex-row lg:gap-4">
+            <DndContext onDragEnd={handleDragEnd}>
+              {columns.map((column) => (
+                <Section
+                  key={column.id}
+                  title={column.title}
+                  id={column.id}
+                  onShowCreate={onShowCreate}
+                >
+                  {tasks
+                    .filter((task) => task.status === column.id)
+                    .map((task, key) => (
+                      <TaskCard
+                        key={key}
+                        id={task.id}
+                        title={task.title}
+                        createdAt={task.createdAt}
+                      />
+                    ))}
+                </Section>
+              ))}
+            </DndContext>
+          </div>
         </div>
 
         {showDetail ||

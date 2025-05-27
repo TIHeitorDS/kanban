@@ -1,19 +1,29 @@
-import TaskCard from "./TaskCard";
+import { useDroppable } from "@dnd-kit/core";
+import React from "react";
 
 export default function Section({
+  id,
   title,
-  onShowDetail,
   onShowCreate,
+  children,
 }: {
+  id: string;
   title: string;
-  onShowDetail?: () => void;
   onShowCreate?: () => void;
+  children?: React.ReactNode;
 }) {
+  const { setNodeRef } = useDroppable({
+    id,
+  });
+
   return (
-    <section className=" mt-4">
+    <section className="mt-4 lg:w-1/2">
       <div className="bg-dark font-medium px-2 h-14 flex items-center justify-between rounded-[12px]">
         <p className="font-urbanist text-xl">
-          {title} <span className="text-white/20">(3)</span>
+          {title}{" "}
+          <span className="text-white/20">
+            ({React.Children.count(children)})
+          </span>
         </p>
 
         <button
@@ -25,8 +35,8 @@ export default function Section({
       </div>
 
       <div className="h-fit mt-3 bg-third p-2 rounded-[12px]">
-        <div onClick={onShowDetail}>
-          <TaskCard />
+        <div ref={setNodeRef} className="space-y-4">
+          {children}
         </div>
       </div>
     </section>

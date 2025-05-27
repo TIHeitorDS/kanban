@@ -3,11 +3,37 @@ import SubmitButton from "./SubmitButton";
 import TaskMenu from "./TaskMenu";
 import { useRef } from "react";
 
-export default function CreateTask({ isShowing = true, onClose = () => {} }) {
+interface CreateTaskProps {
+  isShowing?: boolean;
+  onClose?: () => void;
+  onCreate?: (data: { task: string; description: string; category: string; status: string }) => void;
+}
+
+export default function CreateTask({
+  isShowing = true,
+  onClose = () => {},
+  onCreate = () => {},
+}: CreateTaskProps) {
   const taskMenuRef = useRef<HTMLButtonElement | null>(null);
 
   if (taskMenuRef.current) {
     taskMenuRef.current.style.display = "none"; // Hide the button
+  }
+
+  function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+
+    const form = event.currentTarget;
+    const formData = new FormData(form);
+
+    const data = {
+      task: formData.get("task") as string,
+      description: formData.get("description") as string,
+      category: formData.get("category") as string,
+      status: formData.get("status") as string,
+    };
+
+    onCreate(data);
   }
 
   return (
@@ -17,7 +43,7 @@ export default function CreateTask({ isShowing = true, onClose = () => {} }) {
       onClose={onClose}
       editButtonRef={taskMenuRef}
     >
-      <form action="" className="space-y-4">
+      <form onSubmit={handleSubmit} className="space-y-4">
         <Input
           label=""
           placeholder="Título da tarefa"
@@ -29,7 +55,7 @@ export default function CreateTask({ isShowing = true, onClose = () => {} }) {
         <Input
           label=""
           placeholder="Descrição da tarefa"
-          name="task"
+          name="description"
           type="text"
           required={true}
         />
@@ -39,7 +65,7 @@ export default function CreateTask({ isShowing = true, onClose = () => {} }) {
           placeholder="Categoria da tarefa (opcional)"
           name="category"
           type="text"
-          required={true}
+          required={false}
         />
 
         <div className="flex justify-center gap-4 font-medium mt-8 mb-12">

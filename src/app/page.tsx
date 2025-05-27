@@ -1,103 +1,167 @@
-import Image from "next/image";
+"use client";
+
+import Section from "@/components/Section";
+import DetailTask from "@/components/DetailTask";
+import Link from "next/link";
+import { useState } from "react";
+import CreateTask from "@/components/CreateTask";
+import EditTask from "@/components/EditTask";
+import TaskCard from "@/components/TaskCard";
+import { Task } from "@/utils/definitions";
+import { DndContext, DragEndEvent } from "@dnd-kit/core";
+
+const columns = [
+  {
+    id: "todos",
+    title: "To-do",
+  },
+  {
+    id: "doing",
+    title: "Doing",
+  },
+  {
+    id: "done",
+    title: "Done",
+  },
+];
+
+const initialTasks: Task[] = [
+  {
+    id: "1",
+    status: "todos",
+    title: "Tarefa 1",
+    createdAt: "2025-03-06T00:00:00Z",
+  },
+  {
+    id: "2",
+    status: "doing",
+    title: "Tarefa 2",
+    createdAt: "2025-03-07T00:00:00Z",
+  },
+  {
+    id: "3",
+    status: "done",
+    title: "Tarefa 3",
+    createdAt: "2025-03-08T00:00:00Z",
+  },
+  {
+    id: "4",
+    status: "todos",
+    title: "Tarefa 4",
+    createdAt: "2025-03-09T00:00:00Z",
+  },
+  {
+    id: "5",
+    status: "doing",
+    title: "Tarefa 5",
+    createdAt: "2025-03-10T00:00:00Z",
+  },
+];
 
 export default function Home() {
-  return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm/6 text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-[family-name:var(--font-geist-mono)] font-semibold">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+  const [tasks, setTasks] = useState(initialTasks);
+  const [showDetail, setShowDetail] = useState(false);
+  const [showCreate, setShowCreate] = useState(false);
+  const [showEdit, setShowEdit] = useState(false);
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
+  const onShowCreate = () => {
+    setShowCreate(!showCreate);
+  };
+
+  const onShowEdit = () => {
+    setShowEdit(!showEdit);
+  };
+
+  const handleDragEnd = (event: DragEndEvent) => {
+    const { active, over } = event;
+
+    if (!over) return;
+
+    const taskId = active.id as string;
+    const newStatus = over.id as Task["status"];
+
+    setTasks((prevTasks) =>
+      prevTasks.map((task) =>
+        task.id === taskId
+          ? {
+              ...task,
+              status: newStatus,
+            }
+          : task
+      )
+    );
+  };
+
+  return (
+    <div className="w-full px-4 h-svh bg-secondary divide-y-2 divide-white">
+      <header className="flex py-[10px]">
+        <Link
+          href="/auth/login"
+          className="bg-red rounded-[12px] p-2 w-fit flex items-center"
+        >
+          <img src="/exit.svg" alt="" />
+        </Link>
+
+        <p className="text-2xl font-bold grow text-center">
+          Tarefas de leninha
+        </p>
+      </header>
+
+      <main className="relative overflow-hidden -mx-4">
+        <div className="mx-4">
+          <div className="mt-8">
+            <input
+              type="text"
+              name="search"
+              id="search"
+              placeholder="Pesquisar"
+              className="bg-primary p-[10px] w-full ring-0 rounded-[8px] outline-0 outline-transparent focus:outline-green focus:outline-1 transition-all duration-300 bg-[url('/search.svg')] bg-no-repeat pl-[54px] bg-[position:10px_center]"
             />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+          </div>
+
+          <div className="flex flex-col lg:flex-row lg:gap-4">
+            <DndContext onDragEnd={handleDragEnd}>
+              {columns.map((column) => (
+                <Section
+                  key={column.id}
+                  title={column.title}
+                  id={column.id}
+                  onShowCreate={onShowCreate}
+                >
+                  {tasks
+                    .filter((task) => task.status === column.id)
+                    .map((task, key) => (
+                      <TaskCard
+                        key={key}
+                        id={task.id}
+                        title={task.title}
+                        createdAt={task.createdAt}
+                      />
+                    ))}
+                </Section>
+              ))}
+            </DndContext>
+          </div>
         </div>
+
+        {showDetail ||
+          (showCreate && (
+            <div className="fixed inset-0 bg-primary/50 z-10"></div>
+          ))}
+
+        <DetailTask
+          isShowing={showDetail}
+          onEdit={onShowEdit}
+          onClose={() => setShowDetail(false)}
+        />
+
+        <CreateTask
+          isShowing={showCreate}
+          onClose={() => setShowCreate(false)}
+        />
+
+        <EditTask isShowing={showEdit} onClose={() => setShowEdit(false)} />
       </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
     </div>
   );
 }

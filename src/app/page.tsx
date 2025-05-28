@@ -3,12 +3,18 @@
 import Section from "@/components/Section";
 import DetailTask from "@/components/DetailTask";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import CreateTask from "@/components/CreateTask";
 import EditTask from "@/components/EditTask";
 import TaskCard from "@/components/TaskCard";
 import { Task } from "@/utils/definitions";
-import { DndContext, DragEndEvent } from "@dnd-kit/core";
+import {
+  DndContext,
+  DragEndEvent,
+  PointerSensor,
+  useSensor,
+  useSensors,
+} from "@dnd-kit/core";
 
 const columns = [
   {
@@ -25,41 +31,9 @@ const columns = [
   },
 ];
 
-const initialTasks: Task[] = [
-  {
-    id: "1",
-    status: "todos",
-    title: "Tarefa 1",
-    createdAt: "2025-03-06T00:00:00Z",
-  },
-  {
-    id: "2",
-    status: "doing",
-    title: "Tarefa 2",
-    createdAt: "2025-03-07T00:00:00Z",
-  },
-  {
-    id: "3",
-    status: "done",
-    title: "Tarefa 3",
-    createdAt: "2025-03-08T00:00:00Z",
-  },
-  {
-    id: "4",
-    status: "todos",
-    title: "Tarefa 4",
-    createdAt: "2025-03-09T00:00:00Z",
-  },
-  {
-    id: "5",
-    status: "doing",
-    title: "Tarefa 5",
-    createdAt: "2025-03-10T00:00:00Z",
-  },
-];
-
 export default function Home() {
-  const [tasks, setTasks] = useState(initialTasks);
+  const [tasks, setTasks] = useState<Task[]>([]);
+  const [selectedTask, setSelectedTask] = useState<Task | null>(null);
   const [showDetail, setShowDetail] = useState(false);
   const [showCreate, setShowCreate] = useState(false);
   const [showEdit, setShowEdit] = useState(false);
@@ -67,6 +41,40 @@ export default function Home() {
   const onShowCreate = () => {
     setShowCreate(!showCreate);
   };
+
+  useEffect(() => {
+    async function fetchTasks() {
+      try {
+        const res = await fetch(
+          "https://2mqnmicei7.execute-api.us-east-1.amazonaws.com/dev/tasks/",
+          {
+            method: "GET",
+            headers: {
+              "x-user-id": "admin-test-999",
+              "x-user-role": "admins",
+              "Content-Type": "application/json",
+            },
+          }
+        );
+        if (!res.ok) throw new Error("Erro ao buscar tarefas");
+
+        type ApiTask = Omit<Task, "id"> & {taskId: number}
+        const data: ApiTask[] = await res.json();
+
+        // Transforma os dados recebidos para o formato esperado pelo DnD
+        const normalized: Task[] = data.map((task) => ({
+          ...task,
+          id: String(task.taskId), // converte para `id` esperado
+        }));
+
+        setTasks(normalized);
+      } catch (err) {
+        console.error("Erro ao carregar tasks:", err);
+      }
+    }
+
+    fetchTasks();
+  }, []);
 
   const onShowEdit = () => {
     setShowEdit(!showEdit);
@@ -92,6 +100,14 @@ export default function Home() {
     );
   };
 
+  const sensors = useSensors(
+    useSensor(PointerSensor, {
+      activationConstraint: {
+        distance: 8, // só ativa o drag se mover mais de 8px
+      },
+    })
+  );
+
   return (
     <div className="w-full px-4 h-svh bg-secondary divide-y-2 divide-white">
       <header className="flex py-[10px]">
@@ -103,11 +119,11 @@ export default function Home() {
         </Link>
 
         <p className="text-2xl font-bold grow text-center">
-          Tarefas de leninha
+          Tarefas
         </p>
       </header>
 
-      <main className="relative overflow-hidden -mx-4">
+      <main className="relative h-full overflow-hidden -mx-4">
         <div className="mx-4">
           <div className="mt-8">
             <input
@@ -120,7 +136,7 @@ export default function Home() {
           </div>
 
           <div className="flex flex-col lg:flex-row lg:gap-4">
-            <DndContext onDragEnd={handleDragEnd}>
+            <DndContext sensors={sensors} onDragEnd={handleDragEnd}>
               {columns.map((column) => (
                 <Section
                   key={column.id}
@@ -130,12 +146,17 @@ export default function Home() {
                 >
                   {tasks
                     .filter((task) => task.status === column.id)
-                    .map((task, key) => (
+                    .map((task) => (
                       <TaskCard
-                        key={key}
-                        id={task.id}
+                        key={task.id}
+                        id={String(task.id)}
                         title={task.title}
+                        category={task.category}
                         createdAt={task.createdAt}
+                        onClick={() => {
+                          setSelectedTask(task);
+                          setShowDetail(true);
+                        }}
                       />
                     ))}
                 </Section>
@@ -149,11 +170,17 @@ export default function Home() {
             <div className="fixed inset-0 bg-primary/50 z-10"></div>
           ))}
 
-        <DetailTask
-          isShowing={showDetail}
-          onEdit={onShowEdit}
-          onClose={() => setShowDetail(false)}
-        />
+        {selectedTask && (
+          <DetailTask
+            isShowing={showDetail}
+            onEdit={onShowEdit}
+            onClose={() => {
+              setShowDetail(false);
+              setSelectedTask(null); // limpa a seleção ao fechar
+            }}
+            task={selectedTask!}
+          />
+        )}
 
         <CreateTask
           isShowing={showCreate}

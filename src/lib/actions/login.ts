@@ -2,7 +2,10 @@
 
 import { cookies } from "next/headers";
 
-export async function loginUser(_: any, formData: FormData) {
+export async function loginUser(
+  prevState: { error?: string; success?: boolean } | undefined,
+  formData: FormData
+) {
   const email = formData.get("email") as string;
   const password = formData.get("password") as string;
 
@@ -25,8 +28,6 @@ export async function loginUser(_: any, formData: FormData) {
     const data = await response.json();
 
     if (!response.ok) {
-      const errorText = await response.text(); // só consome aqui
-      console.log("Erro da API:", errorText);
       return { error: "Invalid email or password" };
     }
 

@@ -47,6 +47,7 @@ export async function loginUser(_: any, formData: FormData) {
 
     return { sucsess: true };
   } catch (error) {
+    console.error("Erro ao fazer login:", error);
     return { error: "An error occurred while logging in. Please try again." };
   }
 }

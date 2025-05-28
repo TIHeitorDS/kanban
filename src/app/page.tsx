@@ -117,7 +117,7 @@ export default function Home() {
         </Link>
 
         <p className="text-2xl font-bold grow text-center">
-          Tarefas de leninha
+          Tarefas
         </p>
       </header>
 

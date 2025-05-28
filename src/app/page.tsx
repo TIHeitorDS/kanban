@@ -3,7 +3,7 @@
 import Section from "@/components/Section";
 import DetailTask from "@/components/DetailTask";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import CreateTask from "@/components/CreateTask";
 import EditTask from "@/components/EditTask";
 import TaskCard from "@/components/TaskCard";
@@ -75,6 +75,32 @@ export default function Home() {
   const onShowCreate = () => {
     setShowCreate(!showCreate);
   };
+
+  useEffect(() => {
+    async function fetchTasks() {
+      try {
+        const res = await fetch(
+          "https://2mqnmicei7.execute-api.us-east-1.amazonaws.com/dev/tasks/",
+          {
+            method: "GET",
+            headers: {
+              "x-user-id": "admin-test-999",
+              "x-user-role": "admins",
+              "Content-Type": "application/json",
+            },
+          }
+        );
+        if (!res.ok) throw new Error("Erro ao buscar tarefas");
+        const data = await res.json();
+
+        // setTasks(data);
+      } catch (err) {
+        console.error("Erro ao carregar tasks:", err);
+      }
+    }
+
+    fetchTasks();
+  }, []);
 
   const onShowEdit = () => {
     setShowEdit(!showEdit);
@@ -166,13 +192,14 @@ export default function Home() {
             <div className="fixed inset-0 bg-primary/50 z-10"></div>
           ))}
 
-        <DetailTask
-          isShowing={showDetail}
-          onEdit={onShowEdit}
-          onClose={() => setShowDetail(false)}
-          task={tasks[0]} // Exemplo de tarefa, você pode passar a tarefa selecionada
-        />
-
+        {tasks && (
+          <DetailTask
+            isShowing={showDetail}
+            onEdit={onShowEdit}
+            onClose={() => setShowDetail(false)}
+            task={tasks[0]} // Exemplo de tarefa, você pode passar a tarefa selecionada
+          />
+        )}
         <CreateTask
           isShowing={showCreate}
           onClose={() => setShowCreate(false)}

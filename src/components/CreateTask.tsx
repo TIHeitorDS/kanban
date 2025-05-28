@@ -1,18 +1,56 @@
 import Input from "./Input";
 import SubmitButton from "./SubmitButton";
 import TaskMenu from "./TaskMenu";
-import { useRef, useState } from "react";
+import { FormEventHandler, useRef, useState } from "react";
 
 export default function CreateTask({ isShowing = true, onClose = () => {} }) {
   const taskMenuRef = useRef<HTMLButtonElement | null>(null);
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [category, setCategory] = useState("");
+  const [status, setStatus] = useState("to-do");
+
+  const options = ["To-do", "Doing", "Done"];
 
   if (taskMenuRef.current) {
     taskMenuRef.current.style.display = "none"; // Hide the button
   }
 
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    const newTask = {
+      userId: "user-test-123", // Você pode querer mudar isso para um ID dinâmico
+      title,
+      description,
+      category,
+      status,
+      createdAt: new Date().toISOString(),
+    };
+
+    try {
+      const res = await fetch(
+        "https://2mqnmicei7.execute-api.us-east-1.amazonaws.com/dev/tasks/",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "x-user-id": "admin-test-999", // Adicionando o cabeçalho necessário
+            "x-user-role": "admins",
+          },
+          body: JSON.stringify(newTask),
+        }
+      );
+
+      if (!res.ok) {
+        const errorData = await res.json(); // Tentar obter mais detalhes do erro
+        throw new Error(errorData.message || "Erro ao criar tarefa");
+      }
+      onClose();
+    } catch (err: any) {
+      alert("Erro ao criar tarefa: " + err.message);
+    }
+  };
   return (
     <TaskMenu
       title="Criar tarefa"
@@ -20,7 +58,7 @@ export default function CreateTask({ isShowing = true, onClose = () => {} }) {
       onClose={onClose}
       editButtonRef={taskMenuRef}
     >
-      <form action="" className="space-y-4">
+      <form onSubmit={handleSubmit} className="space-y-4">
         <Input
           label=""
           placeholder="Título da tarefa"
@@ -52,21 +90,21 @@ export default function CreateTask({ isShowing = true, onClose = () => {} }) {
         />
 
         <div className="flex justify-center gap-4 font-medium mt-8 mb-12">
-          {["To-do", "Doing", "Done"].map((status) => (
+          {options.map((item) => (
             <label
-              key={status}
+              key={item}
               className="flex items-center cursor-pointer rounded transition-colors"
             >
               <input
                 type="radio"
                 name="status"
-                value={status}
+                value={item.toLowerCase()}
+                checked={status === item.toLowerCase()}
+                onChange={(e) => setStatus(e.target.value)}
                 className="peer appearance-none w-4 h-4 rounded-full bg-white checked:bg-green checked:border-green mr-1"
                 required
               />
-              <span className="peer-checked:text-white peer-checked:font-bold rounded transition-all">
-                {status}
-              </span>
+              {item}
             </label>
           ))}
         </div>

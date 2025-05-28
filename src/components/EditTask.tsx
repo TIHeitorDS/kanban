@@ -21,7 +21,6 @@ export default function EditTask({ isShowing = true, onClose = () => {} }) {
       editButtonRef={taskMenuRef}
     >
       <form action="" className="space-y-4">
-      <form action="" className="space-y-4">
         <Input
           label=""
           placeholder="Título da tarefa"

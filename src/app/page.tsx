@@ -33,6 +33,7 @@ const columns = [
 
 export default function Home() {
   const [tasks, setTasks] = useState<Task[]>([]);
+  const [selectedTask, setSelectedTask] = useState<Task | null>(null);
   const [showDetail, setShowDetail] = useState(false);
   const [showCreate, setShowCreate] = useState(false);
   const [showEdit, setShowEdit] = useState(false);
@@ -148,8 +149,12 @@ export default function Home() {
                         key={task.id}
                         id={String(task.id)}
                         title={task.title}
+                        category={task.category}
                         createdAt={task.createdAt}
-                        onClick={() => setShowDetail(true)}
+                        onClick={() => {
+                          setSelectedTask(task);
+                          setShowDetail(true);
+                        }}
                       />
                     ))}
                 </Section>
@@ -163,14 +168,18 @@ export default function Home() {
             <div className="fixed inset-0 bg-primary/50 z-10"></div>
           ))}
 
-        {tasks.length > 0 && (
+        {selectedTask && (
           <DetailTask
             isShowing={showDetail}
             onEdit={onShowEdit}
-            onClose={() => setShowDetail(false)}
-            task={tasks[0]} // Exemplo de tarefa, você pode passar a tarefa selecionada
+            onClose={() => {
+              setShowDetail(false);
+              setSelectedTask(null); // limpa a seleção ao fechar
+            }}
+            task={selectedTask!}
           />
         )}
+
         <CreateTask
           isShowing={showCreate}
           onClose={() => setShowCreate(false)}

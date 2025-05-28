@@ -6,10 +6,12 @@ export default function TaskCard({
   title,
   createdAt,
   onClick = () => {},
+  category = "sem categoria",
 }: {
   id: string;
   title: string;
   createdAt: string;
+  category?: string;
   onClick?: () => void;
 }) {
   const { attributes, listeners, setNodeRef } = useDraggable({
@@ -24,7 +26,7 @@ export default function TaskCard({
       {...listeners}
       onClick={onClick}
     >
-      <Category />
+      <Category category={category} />
 
       <div className="divide-y-2 divide-white space-y-4">
         <div className="py-4">

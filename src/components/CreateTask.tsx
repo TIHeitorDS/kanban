@@ -1,10 +1,13 @@
 import Input from "./Input";
 import SubmitButton from "./SubmitButton";
 import TaskMenu from "./TaskMenu";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 
 export default function CreateTask({ isShowing = true, onClose = () => {} }) {
   const taskMenuRef = useRef<HTMLButtonElement | null>(null);
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
+  const [category, setCategory] = useState("");
 
   if (taskMenuRef.current) {
     taskMenuRef.current.style.display = "none"; // Hide the button
@@ -24,6 +27,8 @@ export default function CreateTask({ isShowing = true, onClose = () => {} }) {
           name="task"
           type="text"
           required={true}
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
         />
 
         <Input
@@ -32,6 +37,8 @@ export default function CreateTask({ isShowing = true, onClose = () => {} }) {
           name="task"
           type="text"
           required={true}
+          value={description}
+          onChange={(e) => setDescription(e.target.value)}
         />
 
         <Input
@@ -40,6 +47,8 @@ export default function CreateTask({ isShowing = true, onClose = () => {} }) {
           name="category"
           type="text"
           required={true}
+          value={category}
+          onChange={(e) => setCategory(e.target.value)}
         />
 
         <div className="flex justify-center gap-4 font-medium mt-8 mb-12">

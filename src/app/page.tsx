@@ -31,43 +31,8 @@ const columns = [
   },
 ];
 
-const initialTasks: Task[] = [
-  {
-    id: "1",
-    status: "todos",
-    title: "Tarefa 1",
-    createdAt: "2025-03-06T00:00:00Z",
-    description: "Descrição da tarefa 1",
-    category: "Categoria 1",
-  },
-  {
-    id: "2",
-    status: "doing",
-    title: "Tarefa 2",
-    createdAt: "2025-03-07T00:00:00Z",
-  },
-  {
-    id: "3",
-    status: "done",
-    title: "Tarefa 3",
-    createdAt: "2025-03-08T00:00:00Z",
-  },
-  {
-    id: "4",
-    status: "todos",
-    title: "Tarefa 4",
-    createdAt: "2025-03-09T00:00:00Z",
-  },
-  {
-    id: "5",
-    status: "doing",
-    title: "Tarefa 5",
-    createdAt: "2025-03-10T00:00:00Z",
-  },
-];
-
 export default function Home() {
-  const [tasks, setTasks] = useState(initialTasks);
+  const [tasks, setTasks] = useState<Task[]>([]);
   const [showDetail, setShowDetail] = useState(false);
   const [showCreate, setShowCreate] = useState(false);
   const [showEdit, setShowEdit] = useState(false);
@@ -93,7 +58,13 @@ export default function Home() {
         if (!res.ok) throw new Error("Erro ao buscar tarefas");
         const data = await res.json();
 
-        // setTasks(data);
+        // Transforma os dados recebidos para o formato esperado pelo DnD
+        const normalized = data.map((task: any) => ({
+          ...task,
+          id: String(task.taskId), // converte para `id` esperado
+        }));
+
+        setTasks(normalized);
       } catch (err) {
         console.error("Erro ao carregar tasks:", err);
       }
@@ -172,10 +143,10 @@ export default function Home() {
                 >
                   {tasks
                     .filter((task) => task.status === column.id)
-                    .map((task, key) => (
+                    .map((task) => (
                       <TaskCard
-                        key={key}
-                        id={task.id}
+                        key={task.id}
+                        id={String(task.id)}
                         title={task.title}
                         createdAt={task.createdAt}
                         onClick={() => setShowDetail(true)}
@@ -192,7 +163,7 @@ export default function Home() {
             <div className="fixed inset-0 bg-primary/50 z-10"></div>
           ))}
 
-        {tasks && (
+        {tasks.length > 0 && (
           <DetailTask
             isShowing={showDetail}
             onEdit={onShowEdit}

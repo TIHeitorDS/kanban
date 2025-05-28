@@ -121,7 +121,7 @@ export default function Home() {
         </p>
       </header>
 
-      <main className="relative overflow-hidden -mx-4">
+      <main className="relative h-full overflow-hidden -mx-4">
         <div className="mx-4">
           <div className="mt-8">
             <input

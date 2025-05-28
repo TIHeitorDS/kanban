@@ -57,10 +57,12 @@ export default function Home() {
           }
         );
         if (!res.ok) throw new Error("Erro ao buscar tarefas");
-        const data = await res.json();
+
+        type ApiTask = Omit<Task, "id"> & {taskId: number}
+        const data: ApiTask[] = await res.json();
 
         // Transforma os dados recebidos para o formato esperado pelo DnD
-        const normalized = data.map((task: any) => ({
+        const normalized: Task[] = data.map((task) => ({
           ...task,
           id: String(task.taskId), // converte para `id` esperado
         }));

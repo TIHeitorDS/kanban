@@ -1,7 +1,7 @@
 import Input from "./Input";
 import SubmitButton from "./SubmitButton";
 import TaskMenu from "./TaskMenu";
-import { FormEventHandler, useRef, useState } from "react";
+import { useRef, useState } from "react";
 
 export default function CreateTask({ isShowing = true, onClose = () => {} }) {
   const taskMenuRef = useRef<HTMLButtonElement | null>(null);
@@ -47,8 +47,12 @@ export default function CreateTask({ isShowing = true, onClose = () => {} }) {
         throw new Error(errorData.message || "Erro ao criar tarefa");
       }
       onClose();
-    } catch (err: any) {
-      alert("Erro ao criar tarefa: " + err.message);
+    } catch (err) {
+      if (err instanceof Error) {
+        alert("Erro ao criar tarefa: " + err.message);
+      } else {
+        alert("Erro ao criar tarefa: " + String(err));
+      }
     }
   };
   return (

@@ -47,7 +47,7 @@ export async function loginUser(
     });
 
     return { sucsess: true };
-  } catch (error) {
+  } catch (error: unknown) {
     console.error("Erro ao fazer login:", error);
     return { error: "An error occurred while logging in. Please try again." };
   }

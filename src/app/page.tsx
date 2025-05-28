@@ -8,7 +8,13 @@ import CreateTask from "@/components/CreateTask";
 import EditTask from "@/components/EditTask";
 import TaskCard from "@/components/TaskCard";
 import { Task } from "@/utils/definitions";
-import { DndContext, DragEndEvent } from "@dnd-kit/core";
+import {
+  DndContext,
+  DragEndEvent,
+  PointerSensor,
+  useSensor,
+  useSensors,
+} from "@dnd-kit/core";
 
 const columns = [
   {
@@ -31,6 +37,8 @@ const initialTasks: Task[] = [
     status: "todos",
     title: "Tarefa 1",
     createdAt: "2025-03-06T00:00:00Z",
+    description: "Descrição da tarefa 1",
+    category: "Categoria 1",
   },
   {
     id: "2",
@@ -92,6 +100,14 @@ export default function Home() {
     );
   };
 
+  const sensors = useSensors(
+    useSensor(PointerSensor, {
+      activationConstraint: {
+        distance: 8, // só ativa o drag se mover mais de 8px
+      },
+    })
+  );
+
   return (
     <div className="w-full px-4 h-svh bg-secondary divide-y-2 divide-white">
       <header className="flex py-[10px]">
@@ -120,7 +136,7 @@ export default function Home() {
           </div>
 
           <div className="flex flex-col lg:flex-row lg:gap-4">
-            <DndContext onDragEnd={handleDragEnd}>
+            <DndContext sensors={sensors} onDragEnd={handleDragEnd}>
               {columns.map((column) => (
                 <Section
                   key={column.id}
@@ -136,6 +152,7 @@ export default function Home() {
                         id={task.id}
                         title={task.title}
                         createdAt={task.createdAt}
+                        onClick={() => setShowDetail(true)}
                       />
                     ))}
                 </Section>
@@ -153,6 +170,7 @@ export default function Home() {
           isShowing={showDetail}
           onEdit={onShowEdit}
           onClose={() => setShowDetail(false)}
+          task={tasks[0]} // Exemplo de tarefa, você pode passar a tarefa selecionada
         />
 
         <CreateTask

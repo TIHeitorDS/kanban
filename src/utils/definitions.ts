@@ -3,4 +3,6 @@ export interface Task {
   status: "todos" | "doing" | "done";
   title: string;
   createdAt: string;
+  description?: string;
+  category?: string;
 }

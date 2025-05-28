@@ -2,44 +2,51 @@
 
 import { cookies } from "next/headers";
 
-export async function loginUser(
-  prevState: { error?: string } | undefined,
-  formData: FormData
-) {
-  const email = formData.get("email");
-  const password = formData.get("password");
+export async function loginUser(_: any, formData: FormData) {
+  const email = formData.get("email") as string;
+  const password = formData.get("password") as string;
 
   try {
-    const res = await fetch(
+    const response = await fetch(
       "https://0vlmk1an13.execute-api.us-east-1.amazonaws.com/dev/login",
       {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          Accept: "application/json",
         },
         body: JSON.stringify({
-          email,
+          username: email,
           password,
         }),
       }
     );
-    
-    const { token } = await res.json();
 
-    if (!res.ok) {
+    const data = await response.json();
+
+    if (!response.ok) {
+      const errorText = await response.text(); // só consome aqui
+      console.log("Erro da API:", errorText);
       return { error: "Invalid email or password" };
     }
 
+    // Supondo que a API retorne um token no formato { token: "..." }
+    const token = data.token;
+
+    if (!token) {
+      throw new Error("Token não recebido");
+    }
+
+    // Configura o cookie com o token recebido
     (await cookies()).set("token", token, {
       httpOnly: true,
       secure: true,
       path: "/",
-      maxAge: 60 * 60 * 24, // 1 day
+      maxAge: 60 * 60 * 24, // 1 dia
     });
 
-    return { success: true };
+    return { sucsess: true };
   } catch (error) {
-    console.error("Login error:", error);
     return { error: "An error occurred while logging in. Please try again." };
   }
 }

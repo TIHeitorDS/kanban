@@ -4,14 +4,16 @@ import Link from "next/link";
 import Input from "./Input";
 import SubmitButton from "./SubmitButton";
 import { loginUser } from "@/lib/actions/login";
-import { useActionState, useEffect } from "react";
+import { useActionState, useEffect, useState } from "react";
 import { redirect } from "next/navigation";
 
 export default function LoginForm() {
   const [state, formAction] = useActionState(loginUser, undefined);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
   useEffect(() => {
-    if (state?.success) {
+    if (state?.sucsess) {
       redirect("/");
     }
   }, [state]);
@@ -24,6 +26,8 @@ export default function LoginForm() {
         name="email"
         placeholder="Digite seu e-mail"
         required={true}
+        onChange={(e) => setEmail(e.target.value)}
+        value={email}
       />
 
       <Input
@@ -32,6 +36,8 @@ export default function LoginForm() {
         name="password"
         placeholder="Digite sua senha"
         required={true}
+        onChange={(e) => setPassword(e.target.value)}
+        value={password}
       />
 
       <SubmitButton title="Entrar" />
